@@ -1,0 +1,27 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+public class Main {
+	public static void main(String... args) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out))) {
+			String s = reader.readLine();
+			char[] c = s.toCharArray();
+			int length = c.length;
+			boolean palindrome = true;
+
+			for (int i = 0; i < length / 2.0; i++) {
+				if (c[i] != c[length - 1 - i]) {
+					palindrome = false;
+					break;
+				}
+			}
+
+			writer.write(palindrome ? "" + 1 : "" + 0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

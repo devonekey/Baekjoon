@@ -1,0 +1,45 @@
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.util.Scanner;
+
+public class Main {
+    private static int N;
+    private static int[] elementArray;
+    private static int result = 0;
+
+    public static void main(String... args) throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        N = scanner.nextInt();
+        elementArray = new int[N];
+
+        for (int i = 0; i < N; i++) {
+            elementArray[i] = scanner.nextInt();
+        }
+
+        makeEquation(0, 0);
+
+        writer.write("" + result);
+        writer.flush();
+    }
+
+    private static void makeEquation(int index, int totalValue) {
+        int currentValue = elementArray[index];
+
+        if (index == N - 1) {
+            if (totalValue == currentValue) {
+                result++;
+            }
+
+            return;
+        }
+
+        if (totalValue + currentValue <= 20) {
+            makeEquation(index + 1, totalValue + currentValue);
+        }
+
+        if (index != 0 && totalValue - currentValue >= 0) {
+            makeEquation(index + 1, totalValue - currentValue);
+        }
+    }
+}

@@ -1,0 +1,593 @@
+import java.util.Scanner;
+
+public class Main {
+    private static Area[][] europe;
+    private static int R;
+    private static int C;
+    private static int rstR = -1;
+    private static int rstC = -1;
+    private static final int UP = 2;
+    private static final int DOWN = 3;
+    private static final int LEFT = 5;
+    private static final int RIGHT = 7;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String[] splits = scanner.nextLine().split(" ");
+        R = Integer.parseInt(splits[0]);
+        C = Integer.parseInt(splits[1]);
+        europe = new Area[R][C];
+
+        for (int i = 0; i < R; i++) {
+            String line = scanner.nextLine();
+
+            for (int j = 0; j < C; j++) {
+                europe[i][j] = new Area(line.charAt(j));
+            }
+        }
+
+        City moscow = new City();
+        City zagreb = new City();
+
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if (europe[i][j].block == 'M') {
+                    moscow.hasPipe = inspect(i, j);
+                    moscow.r = i;
+                    moscow.c = j;
+                }
+
+                if (europe[i][j].block == 'Z') {
+                    zagreb.hasPipe = inspect(i, j);
+                    zagreb.r = i;
+                    zagreb.c = j;
+                }
+            }
+        }
+
+        int rstBlock = 1;
+
+        if (!moscow.hasPipe && !zagreb.hasPipe) {
+            switch (moscow.r - zagreb.r) {
+                case -2:
+                    rstR = moscow.r + 1;
+                    rstBlock *= UP * DOWN;
+                    break;
+                case -1:
+                    rstR = moscow.r + 1;
+                    rstBlock *= UP;
+                    break;
+                case 0:
+                    rstR = moscow.r;
+                    break;
+                case 1:
+                    rstR = moscow.r - 1;
+                    rstBlock *= DOWN;
+                    break;
+                case 2:
+                    rstR = moscow.r - 1;
+                    rstBlock *= UP * DOWN;
+                    break;
+            }
+
+            switch (moscow.c - zagreb.c) {
+                case -2:
+                    rstC = moscow.c + 1;
+                    rstBlock *= LEFT * RIGHT;
+                    break;
+                case -1:
+                    rstC = moscow.c;
+                    rstBlock *= RIGHT;
+                    break;
+                case 0:
+                    rstC = moscow.c;
+                    break;
+                case 1:
+                    rstC = moscow.c;
+                    rstBlock *= LEFT;
+                    break;
+                case 2:
+                    rstC = moscow.c - 1;
+                    rstBlock *= LEFT * RIGHT;
+                    break;
+            }
+        } else if (moscow.hasPipe
+                && !zagreb.hasPipe) {
+            if (rstR - 1 >= 0) {
+                switch (europe[rstR - 1][rstC].block) {
+                    case '|':
+                    case '+':
+                    case '1':
+                    case '4':
+                    case 'Z':
+                        rstBlock *= UP;
+
+                        break;
+                }
+            }
+
+            if (rstR + 1 < R) {
+                switch (europe[rstR + 1][rstC].block) {
+                    case '|':
+                    case '+':
+                    case '2':
+                    case '3':
+                    case 'Z':
+                        rstBlock *= DOWN;
+
+                        break;
+                }
+            }
+
+            if (rstC - 1 >= 0) {
+                switch (europe[rstR][rstC - 1].block) {
+                    case '-':
+                    case '+':
+                    case '1':
+                    case '2':
+                    case 'Z':
+                        rstBlock *= LEFT;
+
+                        break;
+                }
+            }
+
+            if (rstC + 1 < C) {
+                switch (europe[rstR][rstC + 1].block) {
+                    case '-':
+                    case '+':
+                    case '3':
+                    case '4':
+                    case 'Z':
+                        rstBlock *= RIGHT;
+
+                        break;
+                }
+            }
+        } else if (!moscow.hasPipe) {
+            if (rstR - 1 >= 0) {
+                switch (europe[rstR - 1][rstC].block) {
+                    case '|':
+                    case '+':
+                    case '1':
+                    case '4':
+                    case 'M':
+                        rstBlock *= UP;
+
+                        break;
+                }
+            }
+
+            if (rstR + 1 < R) {
+                switch (europe[rstR + 1][rstC].block) {
+                    case '|':
+                    case '+':
+                    case '2':
+                    case '3':
+                    case 'M':
+                        rstBlock *= DOWN;
+
+                        break;
+                }
+            }
+
+            if (rstC - 1 >= 0) {
+                switch (europe[rstR][rstC - 1].block) {
+                    case '-':
+                    case '+':
+                    case '1':
+                    case '2':
+                    case 'M':
+                        rstBlock *= LEFT;
+
+                        break;
+                }
+            }
+
+            if (rstC + 1 < C) {
+                switch (europe[rstR][rstC + 1].block) {
+                    case '-':
+                    case '+':
+                    case '3':
+                    case '4':
+                    case 'M':
+                        rstBlock *= RIGHT;
+
+                        break;
+                }
+            }
+        } else {
+            if (rstR - 1 >= 0) {
+                switch (europe[rstR - 1][rstC].block) {
+                    case '|':
+                    case '+':
+                    case '1':
+                    case '4':
+                        rstBlock *= UP;
+
+                        break;
+                }
+            }
+
+            if (rstR + 1 < R) {
+                switch (europe[rstR + 1][rstC].block) {
+                    case '|':
+                    case '+':
+                    case '2':
+                    case '3':
+                        rstBlock *= DOWN;
+
+                        break;
+                }
+            }
+
+            if (rstC - 1 >= 0) {
+                switch (europe[rstR][rstC - 1].block) {
+                    case '-':
+                    case '+':
+                    case '1':
+                    case '2':
+                        rstBlock *= LEFT;
+
+                        break;
+                }
+            }
+
+            if (rstC + 1 < C) {
+                switch (europe[rstR][rstC + 1].block) {
+                    case '-':
+                    case '+':
+                    case '3':
+                    case '4':
+                        rstBlock *= RIGHT;
+
+                        break;
+                }
+            }
+        }
+
+        char rst;
+
+        switch (rstBlock) {
+            case UP * DOWN:
+                rst = '|';
+                break;
+            case UP * LEFT:
+                rst = '3';
+                break;
+            case UP * RIGHT:
+                rst = '2';
+                break;
+            case DOWN * LEFT:
+                rst = '4';
+                break;
+            case DOWN * RIGHT:
+                rst = '1';
+                break;
+            case LEFT * RIGHT:
+                rst = '-';
+                break;
+            default:
+                rst = '+';
+                break;
+        }
+
+        System.out.println(String.format("%d %d %c", rstR + 1, rstC + 1, rst));
+    }
+
+    static class Area {
+        char block;
+        boolean visit;
+
+        Area(char block) {
+            this.block = block;
+            visit = false;
+        }
+    }
+
+    static class City {
+        int r;
+        int c;
+        boolean hasPipe = false;
+    }
+
+    private static boolean inspect(int r, int c) {
+        if (europe[r][c].block != '.') {
+            europe[r][c].visit = true;
+        }
+
+        boolean hasPipe = false;
+
+        switch (europe[r][c].block) {
+            case '|':
+                hasPipe = true;
+
+                if (r - 1 >= 0 &&
+                        europe[r - 1][c].block == '.') {
+                    rstR = r - 1;
+                    rstC = c;
+
+                    break;
+                }
+
+                if (r + 1 < R &&
+                        europe[r + 1][c].block == '.') {
+                    rstR = r + 1;
+                    rstC = c;
+
+                    break;
+                }
+
+                if (r - 1 >= 0 &&
+                        !europe[r - 1][c].visit) {
+                    inspect(r - 1, c);
+                }
+
+                if (r + 1 < R &&
+                        !europe[r + 1][c].visit) {
+                    inspect(r + 1, c);
+                }
+
+                break;
+            case '-':
+                hasPipe = true;
+
+                if (c - 1 >= 0 &&
+                        europe[r][c - 1].block == '.') {
+                    rstR = r;
+                    rstC = c - 1;
+
+                    break;
+                }
+
+                if (r + 1 < C &&
+                        europe[r][c + 1].block == '.') {
+                    rstR = r;
+                    rstC = c + 1;
+
+                    break;
+                }
+
+                if (c - 1 >= 0 &&
+                        !europe[r][c - 1].visit) {
+                    inspect(r, c - 1);
+                }
+
+                if (c + 1 < C &&
+                        !europe[r][c + 1].visit) {
+                    inspect(r, c + 1);
+                }
+
+                break;
+            case '+':
+                hasPipe = true;
+
+                if (r - 1 >= 0 &&
+                        europe[r - 1][c].block == '.') {
+                    rstR = r - 1;
+                    rstC = c;
+
+                    break;
+                }
+
+                if (r + 1 < R &&
+                        europe[r + 1][c].block == '.') {
+                    rstR = r + 1;
+                    rstC = c;
+
+                    break;
+                }
+
+                if (c - 1 >= 0 &&
+                        europe[r][c - 1].block == '.') {
+                    rstR = r;
+                    rstC = c - 1;
+
+                    break;
+                }
+
+                if (c + 1 < C &&
+                        europe[r][c + 1].block == '.') {
+                    rstR = r;
+                    rstC = c + 1;
+
+                    break;
+                }
+
+                if (r - 1 >= 0 &&
+                        !europe[r - 1][c].visit) {
+                    inspect(r - 1, c);
+                }
+
+                if (r + 1 < R &&
+                        !europe[r + 1][c].visit) {
+                    inspect(r + 1, c);
+                }
+
+                if (c - 1 >= 0 &&
+                        !europe[r][c - 1].visit) {
+                    inspect(r, c - 1);
+                }
+
+                if (c + 1 < C &&
+                        !europe[r][c + 1].visit) {
+                    inspect(r, c + 1);
+                }
+
+                break;
+            case '1':
+                hasPipe = true;
+
+                if (r + 1 < R &&
+                        europe[r + 1][c].block == '.') {
+                    rstR = r + 1;
+                    rstC = c;
+
+                    break;
+                }
+
+                if (c + 1 < C &&
+                        europe[r][c + 1].block == '.') {
+                    rstR = r;
+                    rstC = c + 1;
+
+                    break;
+                }
+
+                if (r + 1 < R &&
+                        !europe[r + 1][c].visit) {
+                    inspect(r + 1, c);
+                }
+
+                if (c + 1 < C &&
+                        !europe[r][c + 1].visit) {
+                    inspect(r, c + 1);
+                }
+
+                break;
+            case '2':
+                hasPipe = true;
+
+                if (r - 1 >= 0 &&
+                        europe[r - 1][c].block == '.') {
+                    rstR = r - 1;
+                    rstC = c;
+
+                    break;
+                }
+
+                if (c + 1 < C &&
+                        europe[r][c + 1].block == '.') {
+                    rstR = r;
+                    rstC = c + 1;
+
+                    break;
+                }
+
+                if (r - 1 >= 0 &&
+                        !europe[r - 1][c].visit) {
+                    inspect(r - 1, c);
+                }
+
+                if (c + 1 < C &&
+                        !europe[r][c + 1].visit) {
+                    inspect(r, c + 1);
+                }
+
+                break;
+            case '3':
+                hasPipe = true;
+
+                if (r - 1 >= 0 &&
+                        europe[r - 1][c].block == '.') {
+                    rstR = r - 1;
+                    rstC = c;
+
+                    break;
+                }
+
+                if (c - 1 >= 0 &&
+                        europe[r][c - 1].block == '.') {
+                    rstR = r;
+                    rstC = c - 1;
+
+                    break;
+                }
+
+                if (r - 1 >= 0 &&
+                        !europe[r - 1][c].visit) {
+                    inspect(r - 1, c);
+                }
+
+                if (c - 1 >= 0 &&
+                        !europe[r][c - 1].visit) {
+                    inspect(r, c - 1);
+                }
+
+                break;
+            case '4':
+                hasPipe = true;
+
+                if (r + 1 < R &&
+                        europe[r + 1][c].block == '.') {
+                    rstR = r + 1;
+                    rstC = c;
+
+                    break;
+                }
+
+                if (c - 1 >= 0 &&
+                        europe[r][c - 1].block == '.') {
+                    rstR = r;
+                    rstC = c - 1;
+
+                    break;
+                }
+
+                if (r + 1 < R &&
+                        !europe[r + 1][c].visit) {
+                    inspect(r + 1, c);
+                }
+
+                if (c - 1 >= 0 &&
+                        !europe[r][c - 1].visit) {
+                    inspect(r, c - 1);
+                }
+
+                break;
+            case 'M':
+            case 'Z':
+                if (r - 1 >= 0) {
+                    switch (europe[r - 1][c].block) {
+                        case '|':
+                        case '+':
+                        case '1':
+                        case '4':
+                            hasPipe = inspect(r - 1, c);
+
+                            break;
+                    }
+                }
+
+                if (r + 1 < R) {
+                    switch (europe[r + 1][c].block) {
+                        case '|':
+                        case '+':
+                        case '2':
+                        case '3':
+                            hasPipe = inspect(r + 1, c);
+
+                            break;
+                    }
+                }
+
+                if (c - 1 >= 0) {
+                    switch (europe[r][c - 1].block) {
+                        case '-':
+                        case '+':
+                        case '1':
+                        case '2':
+                            hasPipe = inspect(r, c - 1);
+
+                            break;
+                    }
+                }
+
+                if (c + 1 < C) {
+                    switch (europe[r][c + 1].block) {
+                        case '-':
+                        case '+':
+                        case '3':
+                        case '4':
+                            hasPipe = inspect(r, c + 1);
+
+                            break;
+                    }
+                }
+
+                break;
+        }
+
+        return hasPipe;
+    }
+}

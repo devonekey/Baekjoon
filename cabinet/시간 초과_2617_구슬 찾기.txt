@@ -1,0 +1,71 @@
+import java.util.*;
+
+public class Main {
+    private static Map<Integer, Marble> map;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int N = scanner.nextInt();
+        int M = scanner.nextInt();
+        map = new HashMap<>();
+
+        for (int i = 0; i < M; i++) {
+            int value = scanner.nextInt();
+            int childValue = scanner.nextInt();
+            Marble marble;
+
+            marble = map.containsKey(value) ? map.get(value) : new Marble();
+
+            marble.children.add(childValue);
+            map.put(value, marble);
+
+            marble = map.containsKey(childValue) ? map.get(childValue) : new Marble();
+
+            marble.parents.add(value);
+            map.put(childValue, marble);
+        }
+
+        int result = 0;
+
+        for (int i = 1; i <= N; i++) {
+            if (map.containsKey(i)) {
+                int parentLength = map.get(i).getParentLength();
+                int childrenLength = map.get(i).getChildrenLength();
+
+                if (parentLength > N / 2 ||
+                        childrenLength > N / 2) {
+                    result++;
+                }
+            }
+        }
+
+        System.out.println(result);
+    }
+
+    static class Marble {
+        List<Integer> parents = new ArrayList<>();
+        List<Integer> children = new ArrayList<>();
+
+        int getParentLength() {
+            int length = 0;
+
+            for (int parent : parents) {
+                int targetLength = map.get(parent).getParentLength();
+                length = length >= targetLength ? length : targetLength;
+            }
+
+            return length + 1;
+        }
+
+        int getChildrenLength() {
+            int length = 0;
+
+            for (int child : children) {
+                int targetLength = map.get(child).getChildrenLength();
+                length = length >= targetLength ? length : targetLength;
+            }
+
+            return length + 1;
+        }
+    }
+}

@@ -1,0 +1,57 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.*;
+
+public class Main {
+    static class Alphabet {
+        char spell;
+        int value;
+
+        Alphabet(char spell,
+                 int value) {
+            this.spell = spell;
+            this.value = value;
+        }
+    }
+
+    public static void main(String... args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        int N = Integer.parseInt(reader.readLine());
+        Map<Character, Integer> alphabetMap = new HashMap<>();
+
+        for (int i = 0; i < N; i++) {
+            char[] word = reader.readLine().toCharArray();
+
+            for (int j = 0; j < word.length; j++) {
+                if (alphabetMap.containsKey(word[j])) {
+                    alphabetMap.put(word[j], alphabetMap.get(word[j]) + (int) Math.pow(10, word.length - 1 - j));
+                } else {
+                    alphabetMap.put(word[j], (int) Math.pow(10, word.length - 1 - j));
+                }
+            }
+        }
+
+        Iterator<Map.Entry<Character, Integer>> values = alphabetMap.entrySet().iterator();
+        List<Alphabet> alphabetList = new ArrayList<>();
+
+        while (values.hasNext()) {
+            Map.Entry<Character, Integer> alphabet = values.next();
+
+            alphabetList.add(new Alphabet(alphabet.getKey(), alphabet.getValue()));
+            values.remove();
+        }
+
+        alphabetList.sort((o1, o2) -> Integer.compare(o2.value, o1.value));
+        int result = 0;
+
+        for (int i = 0; i < alphabetList.size(); i++) {
+            result += alphabetList.get(i).value * (9 - i);
+        }
+
+        writer.write("" + result);
+        writer.flush();
+    }
+}

@@ -1,0 +1,57 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+public class Main {
+    static class Score {
+        int document;
+        int interview;
+        boolean selected;
+
+        Score(String data) {
+            document = Integer.parseInt(data.split(" ")[0]);
+            interview = Integer.parseInt(data.split(" ")[1]);
+            selected = true;
+        }
+
+        int getDocument() {
+            return document;
+        }
+    }
+
+    public static void main(String... args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        int T = Integer.parseInt(reader.readLine());
+
+        for (int i = 0; i < T; i++) {
+            List<Score> scoreList = new ArrayList<>();
+            int N = Integer.parseInt(reader.readLine());
+
+            for (int j = 0; j < N; j++) {
+                scoreList.add(new Score(reader.readLine()));
+            }
+
+            scoreList.sort(Comparator.comparing(Score::getDocument));
+
+            Score target = scoreList.get(0);
+            int count = 1;
+
+            for (int j = 1; j < N; j++) {
+                if (target.interview > scoreList.get(j).interview) {
+                    target = scoreList.get(j);
+
+                    count++;
+                }
+            }
+
+            writer.write("" + count + "\n");
+        }
+
+        writer.flush();
+    }
+}

@@ -1,0 +1,143 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    static class Jewel {
+        int weight;
+        int value;
+
+        Jewel(String data) {
+            weight = Integer.parseInt(data.split(" ")[0]);
+            value = Integer.parseInt(data.split(" ")[1]);
+        }
+    }
+
+    static class Bag {
+        int weight;
+
+        Bag(String data) {
+            weight = Integer.parseInt(data);
+        }
+    }
+
+    public static void main(String... args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        String[] split = reader.readLine().split(" ");
+        int N = Integer.parseInt(split[0]);
+        int K = Integer.parseInt(split[1]);
+        List<Jewel> jewels = new ArrayList<>();
+        List<Bag> bags = new ArrayList<>();
+        int max = 0;
+
+        for (int i = 0; i < N; i++) {
+            Jewel jewel = new Jewel(reader.readLine());
+
+            if (i == 0) {
+                jewels.add(jewel);
+            } else {
+                for (int j = 0; j < jewels.size(); j++) {
+                    if (jewel.value > jewels.get(j).value ||
+                            (jewel.value == jewels.get(j).value && jewel.weight <= jewels.get(j).weight)) {
+                        jewels.add(j, jewel);
+                        break;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < K; i++) {
+            Bag bag = new Bag(reader.readLine());
+
+            if (i == 0) {
+                bags.add(bag);
+            } else {
+                for (int j = 0; j < bags.size(); j++) {
+                    if (bag.weight <= bags.get(j).weight) {
+                        bags.add(j, bag);
+                        break;
+                    }
+                }
+            }
+        }
+
+        for (Jewel jewel : jewels) {
+            for (Bag bag : bags) {
+                if (jewel.weight <= bag.weight) {
+                    bags.remove(bag);
+                    max += jewel.value;
+                    break;
+                }
+            }
+        }
+
+        writer.write("" + max);
+        writer.flush();
+    }
+}
+
+//
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Iterator;
+import java.util.PriorityQueue;
+
+public class Main {
+    static class Jewel implements Comparable {
+        int weight;
+        int value;
+
+        Jewel(String data) {
+            weight = Integer.parseInt(data.split(" ")[0]);
+            value = Integer.parseInt(data.split(" ")[1]);
+        }
+
+        @Override
+        public int compareTo(Object object) {
+            return value > ((Jewel) object).value ? 1 : value < ((Jewel) object).value ? -1 :
+                    Integer.compare(weight, ((Jewel) object).weight);
+        }
+    }
+
+    static class Bag implements Comparable {
+        int weight;
+
+        Bag(String data) {
+            weight = Integer.parseInt(data);
+        }
+
+        @Override
+        public int compareTo(Object object) {
+            return  Integer.compare(weight, ((Bag) object).weight);
+        }
+    }
+
+    public static void main(String... args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        String[] split = reader.readLine().split(" ");
+        int N = Integer.parseInt(split[0]);
+        int K = Integer.parseInt(split[1]);
+        int max = 0;
+
+        PriorityQueue<Jewel> jewels = new PriorityQueue<>();
+        PriorityQueue<Bag> bags = new PriorityQueue<>();
+
+        for (int i = 0; i < N; i++) {
+            jewels.add(new Jewel(reader.readLine()));
+        }
+
+        for (int i = 0; i < K; i++) {
+            bags.add(new Bag(reader.readLine()));
+        }
+
+        Iterator<Jewel> iterator = jewels.iterator();
+    }
+}

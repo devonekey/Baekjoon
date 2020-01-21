@@ -1,0 +1,50 @@
+import java.util.Scanner;
+
+public class Main {
+    private static int n;
+    private static int[][] forest;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        n = scanner.nextInt();
+        forest = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                forest[i][j] = scanner.nextInt();
+            }
+        }
+
+        int result = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                result = Math.max(result, find(i, j));
+            }
+        }
+
+        System.out.println(result);
+    }
+
+    private static int find(int r, int c) {
+        int K = 0;
+
+        if (c - 1 > 0 && forest[r][c] > forest[r][c - 1]) {
+            K = Math.max(K, find(r, c - 1));
+        }
+
+        if (r - 1 > 0 && forest[r][c] > forest[r - 1][c]) {
+            K = Math.max(K, find(r - 1, c));
+        }
+
+        if (c + 1 < n && forest[r][c] > forest[r][c + 1]) {
+            K = Math.max(K, find(r, c + 1));
+        }
+
+        if (r + 1 < n && forest[r][c] > forest[r + 1][c]) {
+            K = Math.max(K, find(r + 1, c));
+        }
+
+        return ++K;
+    }
+}

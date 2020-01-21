@@ -1,0 +1,45 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+	public static void main(String... args) {
+		List<List<Integer>> gridData;
+
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));) {
+			String firstLine = reader.readLine();
+			int N = Integer.parseInt(firstLine.split(" ")[0]);
+			int M = Integer.parseInt(firstLine.split(" ")[1]);
+			gridData = new ArrayList<>();
+
+			for (int row = 0; row < N; row++) {
+				List<Integer> linearData = new ArrayList<>();
+				String line = reader.readLine();
+
+				for (String token : line.split(" ")) {
+					linearData.add(Integer.parseInt(token));
+				}
+
+				gridData.add(linearData);
+			}
+			
+			for (int row = 0; row < N; row++) {
+				for (int column = 0; column < M; column++) {
+					int left = row > 0 ? gridData.get(row - 1).get(column) : 0;
+					int right = column > 0 ? gridData.get(row).get(column - 1) : 0;
+					
+					gridData.get(row).set(column,
+							gridData.get(row).get(column) + (left > right ? left : right));
+				}
+			}
+			
+			writer.write("" + gridData.get(N - 1).get(M - 1));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

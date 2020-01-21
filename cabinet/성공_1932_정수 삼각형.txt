@@ -1,0 +1,47 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+	public static void main(String... args) {
+		List<List<Integer>> gridData;
+
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));) {
+			int n = Integer.parseInt(reader.readLine());
+			gridData = new ArrayList<>();
+
+			for (int row = 0; row < n; row++) {
+				List<Integer> linearData = new ArrayList<>();
+				String line = reader.readLine();
+
+				for (String token : line.split(" ")) {
+					linearData.add(Integer.parseInt(token));
+				}
+
+				gridData.add(0, linearData);
+			}
+			
+			for (int row = 0; row < n; row++) {
+				if (row == 0) {
+					continue;
+				}
+				
+				for (int column = 0; column < gridData.get(row).size(); column++) {
+					int left = gridData.get(row - 1).get(column); 
+					int right = gridData.get(row - 1).get(column + 1);
+					
+					gridData.get(row).set(column,
+							gridData.get(row).get(column) + (left > right ? left : right));
+				}
+			}
+			
+			writer.write("" + gridData.get(n - 1).get(0));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

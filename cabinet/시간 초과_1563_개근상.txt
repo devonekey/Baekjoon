@@ -1,0 +1,77 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+	public static void main(String... args) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));) {
+			int N = Integer.parseInt(reader.readLine());
+			List<Node> prevData = null;
+			List<Node> currentData = null;
+			
+			for (int row = 0; row < N; row++) {
+				currentData = new ArrayList<>();
+				
+				if (row == 0) {
+					currentData.add(new Node());
+					currentData.add(new Node().addL());
+					currentData.add(new Node().addA());
+				} else {
+					for (Node parent : prevData) {
+						if (parent.L < 1) {
+							Node node = new Node();
+
+							node.L = parent.L;
+							node.A = 0;
+							
+							currentData.add(node.addL());
+						}
+						
+						if (parent.A < 2) {
+							Node node = new Node();
+
+							node.L = parent.L;
+							node.A = parent.A;
+							
+							currentData.add(node.addA());
+						}
+						
+						Node node = new Node();
+
+						node.L = parent.L;
+						node.A = 0;
+						
+						currentData.add(node);
+					}
+				}
+				
+				prevData = currentData;
+			}
+
+			writer.write("" + currentData.size() % 1000000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	static class Node {
+		int L = 0;
+		int A = 0;
+		
+		Node addL() {
+			L++;
+			
+			return this;
+		}
+		
+		Node addA() {
+			A++;
+			
+			return this;
+		}
+	}
+}

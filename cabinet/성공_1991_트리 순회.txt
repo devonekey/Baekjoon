@@ -1,0 +1,109 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    private static final int UNALLOCATED_NODE = -1;
+    private static final int PRE_ORDER = 0;
+    private static final int IN_ORDER = 1;
+    private static final int POST_ORDER = 2;
+    private static final int PARENT_NODE = 0;
+    private static final int LEFT_CHILD_NODE = 1;
+    private static final int RIGHT_CHILD_NODE = 2;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int N = scanner.nextInt();
+        List<String> preOrder = new ArrayList<>();
+        List<String> inOrder = new ArrayList<>();
+        List<String> postOrder = new ArrayList<>();
+
+        for (int i = 0; i < N; i++) {
+            int[] parentNodeIndex = {
+                    UNALLOCATED_NODE,
+                    UNALLOCATED_NODE,
+                    UNALLOCATED_NODE
+            };
+
+            for (int nodeType = 0; nodeType < 3; nodeType++) {
+                String node = scanner.next();
+
+                if (node.equals(".")) {
+                    continue;
+                }
+
+                int[] currentNodeIndex = {
+                        preOrder.indexOf(node),
+                        inOrder.indexOf(node),
+                        postOrder.indexOf(node)
+                };
+
+                switch (nodeType) {
+                    case PARENT_NODE:
+                        parentNodeIndex = currentNodeIndex;
+
+                        if (currentNodeIndex[PRE_ORDER] == UNALLOCATED_NODE) {
+                            preOrder.add(node);
+
+                            parentNodeIndex[PRE_ORDER] = preOrder.indexOf(node);
+                        }
+
+                        if (currentNodeIndex[IN_ORDER] == UNALLOCATED_NODE) {
+                            inOrder.add(node);
+
+                            parentNodeIndex[IN_ORDER] = inOrder.indexOf(node);
+                        }
+
+                        if (currentNodeIndex[POST_ORDER] == UNALLOCATED_NODE) {
+                            postOrder.add(node);
+
+                            parentNodeIndex[POST_ORDER] = postOrder.indexOf(node);
+                        }
+                        break;
+                    case LEFT_CHILD_NODE:
+                        if (currentNodeIndex[PRE_ORDER] == UNALLOCATED_NODE) {
+                            preOrder.add(++parentNodeIndex[PRE_ORDER], node);
+                        }
+
+                        if (currentNodeIndex[IN_ORDER] == UNALLOCATED_NODE) {
+                            inOrder.add(parentNodeIndex[IN_ORDER]++, node);
+                        }
+
+                        if (currentNodeIndex[POST_ORDER] == UNALLOCATED_NODE) {
+                            postOrder.add(parentNodeIndex[POST_ORDER]++, node);
+                        }
+                        break;
+                    case RIGHT_CHILD_NODE:
+                        if (currentNodeIndex[PRE_ORDER] == UNALLOCATED_NODE) {
+                            preOrder.add(++parentNodeIndex[PRE_ORDER], node);
+                        }
+
+                        if (currentNodeIndex[IN_ORDER] == UNALLOCATED_NODE) {
+                            inOrder.add(++parentNodeIndex[IN_ORDER], node);
+                        }
+
+                        if (currentNodeIndex[POST_ORDER] == UNALLOCATED_NODE) {
+                            postOrder.add(parentNodeIndex[POST_ORDER], node);
+                        }
+                        break;
+                }
+            }
+        }
+
+        for (String node : preOrder) {
+            System.out.print(node);
+        }
+
+        System.out.println();
+
+        for (String node : inOrder) {
+            System.out.print(node);
+        }
+
+        System.out.println();
+
+        for (String node : postOrder) {
+            System.out.print(node);
+        }
+    }
+}

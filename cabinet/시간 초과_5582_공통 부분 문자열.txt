@@ -1,0 +1,30 @@
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String... args) throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        String S1 = scanner.nextLine();
+        String S2 = scanner.nextLine();
+        String target = S1.length() < S2.length() ? S1 : S2;
+        String compTarget = S1.length() < S2.length() ? S2 : S1;
+        int length = target.length();
+        int result = 0;
+
+        for (int i = length; i > 0; i--) {
+            for (int j = 0; j + i - 1 < length; j++) {
+                if (compTarget.contains(target.substring(j, j + i - 1))) {
+                    result = target.substring(j, j + i - 1).length();
+                    i = 0;
+
+                    break;
+                }
+            }
+        }
+
+        writer.write("" + result);
+        writer.flush();
+    }
+}

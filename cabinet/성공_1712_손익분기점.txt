@@ -1,0 +1,30 @@
+package com.onekey;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+public class Main {
+    public static void main(String... args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        String[] split = reader.readLine().split(" ");
+        int A = Integer.parseInt(split[0]);
+        int B = Integer.parseInt(split[1]);
+        int C = Integer.parseInt(split[2]);
+        int point = 0;
+
+        if (C - B <= 0) {
+            writer.write("-1");
+            writer.flush();
+
+            return;
+        }
+
+        for (long i = A; i >= 0; point++, i -= (C - B));
+
+        writer.write("" + point);
+        writer.flush();
+    }
+}

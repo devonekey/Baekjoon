@@ -1,0 +1,167 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+	public static void main(String... args) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));) {
+			String firstLine = reader.readLine();
+			int R = Integer.parseInt(firstLine.split(" ")[0]);
+			int C = Integer.parseInt(firstLine.split(" ")[1]);
+			int T = Integer.parseInt(firstLine.split(" ")[2]);
+			List<Integer> cleaner = new ArrayList<>();
+			List<List<List<Integer>>> feature = new ArrayList<>();
+
+			for (int time = 0; time < T + 1; time++) {
+				if (time == 0) {
+					List<List<Integer>> gridData = new ArrayList<>();
+					
+					for (int row = 0; row < R; row++) {
+						List<Integer> linearData = new ArrayList<>();
+						String line = reader.readLine();
+		
+						for (String token : line.split(" ")) {
+							if (Integer.parseInt(token) == -1) {
+								cleaner.add(row);
+							}
+							
+							linearData.add(Integer.parseInt(token));
+						}
+
+						gridData.add(linearData);
+					}
+					
+					feature.add(gridData);
+				} else {
+					List<List<Integer>> gridData = new ArrayList<>();
+					
+					for (int row = 0; row < R; row++) {
+						List<Integer> linearData = new ArrayList<>();
+
+						linearData.add(cleaner.contains(row) ? -1 : 0);
+						
+						for (int column = 1; column < C; column++) {
+							linearData.add(0);
+						}
+		
+						gridData.add(linearData);
+					}
+
+					feature.add(gridData);
+				}
+			}
+			
+			for (int time = 0; time < T; time++) {
+				List<List<Integer>> currentData = feature.get(time);
+				
+				// Fine dust diffusion
+				for (int row = 0; row < R; row++) {
+					for (int column = 0; column < C; column++) {
+						boolean isFirstRow = row == 0;
+						boolean isFirstColumn = column == 0;
+						boolean isLastRow = row == R - 1;
+						boolean isLastColumn = column == C - 1;
+						int count = 0;
+						
+						if ((cleaner.get(0) == row && column == 0)
+								|| (cleaner.get(1) == row && column == 0)) {
+							continue;
+						}
+						
+						// top
+						if (!isFirstRow
+								&& !((row - 1 == cleaner.get(0) || row - 1 == cleaner.get(1)) && column == 0)) {
+							count++;
+							feature.get(time + 1).get(row - 1).set(column,
+									feature.get(time + 1).get(row - 1).get(column) + currentData.get(row).get(column) / 5);
+						}
+						
+						// left
+						if (!isFirstColumn
+								&& !((row == cleaner.get(0) || row == cleaner.get(1)) && column - 1 == 0)) {
+							count++;
+							feature.get(time + 1).get(row).set(column - 1,
+									feature.get(time + 1).get(row).get(column - 1) + currentData.get(row).get(column) / 5);
+						}
+						
+						// bottom
+						if (!isLastRow
+								&& !((row + 1 == cleaner.get(0) || row + 1 == cleaner.get(1)) && column == 0)) {
+							count++;
+							feature.get(time + 1).get(row + 1).set(column,
+									feature.get(time + 1).get(row + 1).get(column) + currentData.get(row).get(column) / 5);
+						}
+						
+						// right
+						if (!isLastColumn) {
+							count++;
+							feature.get(time + 1).get(row).set(column + 1,
+									feature.get(time + 1).get(row).get(column + 1) + currentData.get(row).get(column) / 5);
+						}
+						
+						feature.get(time + 1).get(row).set(column,
+								feature.get(time + 1).get(row).get(column) + currentData.get(row).get(column) - count * (currentData.get(row).get(column) / 5));
+					}
+				}
+				
+				currentData = feature.get(time + 1);
+				
+				// Counterclockwise air purification
+				for (int row = cleaner.get(0) - 1; row > 0; row--) {
+					currentData.get(row).set(0, currentData.get(row - 1).get(0));
+				}
+				
+				for (int column = 0; column < C - 1; column++) {
+					currentData.get(0).set(column, currentData.get(0).get(column + 1));
+				}
+				
+				for (int row = 0; row < cleaner.get(0); row++) {
+					currentData.get(row).set(C - 1, currentData.get(row + 1).get(C - 1));
+				}
+				
+				for (int column = C - 1; column > 1; column--) {
+					currentData.get(cleaner.get(0)).set(column, currentData.get(cleaner.get(0)).get(column - 1));
+				}
+				
+				currentData.get(cleaner.get(0)).set(1, 0);
+				
+				// Clockwise air purification
+				for (int row = cleaner.get(1) + 1; row < R - 1; row++) {
+					currentData.get(row).set(0, currentData.get(row + 1).get(0));
+				}
+				
+				for (int column = 0; column < C - 1; column++) {
+					currentData.get(R - 1).set(column, currentData.get(R - 1).get(column + 1));
+				}
+				
+				for (int row = R - 1; row > cleaner.get(1); row--) {
+					currentData.get(row).set(C - 1, currentData.get(row - 1).get(C - 1));
+				}
+				
+				for (int column = C - 1; column > 1; column--) {
+					currentData.get(cleaner.get(1)).set(column, currentData.get(cleaner.get(1)).get(column - 1));
+				}
+				
+				currentData.get(cleaner.get(1)).set(1, 0);
+			}
+
+			int sum = 0;
+			
+			for (int row = 0; row < R; row++) {
+				for (int column = 0; column < C; column++) {
+					sum += feature.get(T).get(row).get(column);
+				}
+			}
+			
+			sum += 2;
+
+			writer.write("" + sum);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

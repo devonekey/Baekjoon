@@ -1,0 +1,81 @@
+import java.util.Scanner;
+
+public class Main {
+    private static int N;
+    private static Area[][] areas;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        N = scanner.nextInt();
+        areas = new Area[N][N];
+        int maxHeight = 0;
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                int height = scanner.nextInt();
+                areas[i][j] = new Area(height);
+                maxHeight = height > maxHeight ? height : maxHeight;
+            }
+        }
+
+        int rst = 0;
+
+        for (int i = 0; i < maxHeight; i++) {
+            int cnt = 0;
+
+            for (int j = 0; j < N; j++) {
+                for (int k = 0; k < N; k++) {
+                    areas[j][k].visit = false;
+                }
+            }
+
+            for (int j = 0; j < N; j++) {
+                for (int k = 0; k < N; k++) {
+                    if (isSafe(i, j, k)) {
+                        cnt++;
+                    }
+                }
+            }
+
+            rst = Math.max(rst, cnt);
+        }
+
+        System.out.println(rst);
+    }
+
+    static class Area {
+        int height;
+        boolean visit;
+
+        Area(int height) {
+            this.height = height;
+            visit = false;
+        }
+    }
+
+    private static boolean isSafe(int height, int r, int c) {
+        if (areas[r][c].height > height && !areas[r][c].visit) {
+            areas[r][c].visit = true;
+
+            if (r != 0) {
+                isSafe(height, r - 1, c);
+            }
+
+            if (r != N - 1) {
+                isSafe(height, r + 1, c);
+            }
+
+            if (c != 0) {
+                isSafe(height, r, c - 1);
+            }
+
+            if (c !=  N - 1) {
+                isSafe(height, r, c + 1);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+}

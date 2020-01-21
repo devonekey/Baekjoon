@@ -1,0 +1,44 @@
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.util.Scanner;
+
+public class Main {
+    private static int N;
+    private static int S;
+    private static int[] sequence;
+    private static int result;
+
+    public static void main(String... args) throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        N = scanner.nextInt();
+        S = scanner.nextInt();
+        sequence = new int[N];
+        result = 0;
+
+        for (int i = 0; i < N; i++) {
+            sequence[i] = scanner.nextInt();
+        }
+
+        scanner.close();
+
+        for (int i = 0; i < N; i++) {
+            makeSubSequence(i, 0);
+        }
+
+        writer.write("" + result);
+        writer.flush();
+    }
+
+    private static void makeSubSequence(int index, int value) {
+        value += sequence[index];
+
+        if (value == S) {
+            result++;
+        }
+
+        for (int i = index + 1; i < N; i++) {
+            makeSubSequence(i, value);
+        }
+    }
+}

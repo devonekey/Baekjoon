@@ -1,0 +1,62 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+	public static void main(String... args) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));) {
+			int N = Integer.parseInt(reader.readLine());
+			List<Integer> A = new ArrayList<>();
+			List<Integer> ascCountList = new ArrayList<>();
+			List<Integer> desCountList = new ArrayList<>();
+			int max = Integer.MIN_VALUE;
+
+			for (String token : reader.readLine().split(" ")) {
+				A.add(Integer.parseInt(token));
+				ascCountList.add(0);
+				desCountList.add(0);
+			}
+
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < i; j++) {
+					if (A.get(j) < A.get(i)) {
+						if (ascCountList.get(j) >= ascCountList.get(i)) {
+							ascCountList.set(i, ascCountList.get(j) + 1);
+						}
+					}
+				}
+
+				ascCountList.set(i, ascCountList.get(i) == 0 ?
+						1 : ascCountList.get(i));
+			}
+
+			for (int i = N - 1; i >= 0; i--) {
+				for (int j = N - 1; j > i; j--) {
+					if (A.get(j) < A.get(i)) {
+						if (desCountList.get(j) >= desCountList.get(i)) {
+							desCountList.set(i, desCountList.get(j) + 1);
+						}
+					}
+				}
+
+				desCountList.set(i, desCountList.get(i) == 0 ?
+						1 : desCountList.get(i));
+			}
+
+			for (int i = 0; i < N; i++) {
+				max = ascCountList.get(i) + desCountList.get(i) > max ?
+						ascCountList.get(i) + desCountList.get(i) : max;
+			}
+
+			max--;
+
+			writer.write("" + max);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

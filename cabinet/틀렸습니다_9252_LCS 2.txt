@@ -1,0 +1,68 @@
+package com.onekey;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+public class Main {
+    public static void main(String... args) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        String maxLCS = "";
+        char[] c1 = reader.readLine().toCharArray();
+        char[] c2 = reader.readLine().toCharArray();
+
+        for (int i = c1.length - 1; i >= 0; i--) {
+            String LCS = "";
+            boolean found = false;
+            int l1 = 0;
+            int l2 = 0;
+
+            for (int j = c2.length - 1, s1 = i, s2 = j; s1 >= 0 && s2 >= 0;) {
+                if (c1[s1] == c2[j]) {
+                    if (!found) {
+                        found = true;
+                        l1 = s1 + 1;
+                        l2 = j + 1;
+                    }
+
+                    LCS = c1[s1] + LCS;
+
+                    s1--;
+                    s2 = j - 1;
+                }
+
+                j--;
+
+                if (j < 0) {
+                    s1--;
+                    j = s2;
+                }
+            }
+
+            for (int j = l2, s1 = l1, s2 = l2; s1 <= c2.length - 1 && s2 <= c2.length - 1;) {
+                if (c1[s1] == c2[j]) {
+                    LCS = LCS + c1[s1];
+
+                    s1++;
+                    s2 = j + 1;
+                }
+
+                j++;
+
+                if (j > c2.length - 1) {
+                    s1++;
+                    j = s2;
+                }
+            }
+
+            maxLCS = maxLCS.length() > LCS.length() ? maxLCS : LCS;
+        }
+
+        writer.write("" + maxLCS.length());
+        writer.write("\n" + maxLCS);
+        writer.flush();
+    }
+}

@@ -1,0 +1,53 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int N = scanner.nextInt();
+        int[] arr = new int[N];
+
+        for (int i = 0; i < N; i++) {
+            arr[i] = scanner.nextInt();
+        }
+
+        for (int i = 0; i < N; i++) {
+            int target = i;
+            boolean found = false;
+
+            do {
+                for (int j = 0; j < N; j++) {
+                    if (target + 1 == arr[j]) {
+                        found = true;
+
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    if (arr[target] == 0) {
+                        break;
+                    } else {
+                        int temp = arr[target] - 1;
+                        arr[target] = 0;
+                        target = temp;
+                    }
+                }
+            } while (!found);
+        }
+
+        List<Integer> resultList = new ArrayList<>();
+
+        for (int i = 0; i < N; i++) {
+            if (arr[i] != 0) {
+                resultList.add(arr[i]);
+            }
+        }
+
+        resultList.sort(Integer::compareTo);
+        resultList.add(0, resultList.size());
+
+        for (int result : resultList) {
+            System.out.println(result);
+        }
+    }
+}
