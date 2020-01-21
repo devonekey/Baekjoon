@@ -1,0 +1,12 @@
+# Generated files
+out/
+
+# Log Files
+*.log
+
+# IntelliJ
+*.iml
+.idea/
+
+# Others
+**/.DS_Store
