@@ -1,0 +1,74 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+	public static class Student {
+		String name;
+		int korean;
+		int mathematics;
+		int english;
+
+		public Student(String info) {
+			String[] splits = info.split(" ");
+			name = splits[0];
+			korean = Integer.parseInt(splits[1]);
+			mathematics = Integer.parseInt(splits[2]);
+			english = Integer.parseInt(splits[3]);
+		}
+
+		public int compareTo(Student student) {
+			if (korean > student.korean) {
+				return 1;
+			} else if (korean < student.korean) {
+				return -1;
+			}
+
+			if (english < student.english) {
+				return 1;
+			} else if (english > student.english) {
+				return -1;
+			}
+
+			if (mathematics > student.mathematics) {
+				return 1;
+			} else if (mathematics < student.mathematics) {
+				return -1;
+			}
+
+			return name.compareTo(student.name);
+		}
+	}
+
+	public static void main(String[] args) {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+		int num = Integer.parseInt(reader.readLine());
+		List<Student> students = new ArrayList<>();
+		int left, mid, right;
+
+		for (int i = 0; i < num; i++) {
+			if (i == 0) {
+				students.add(new Student(reader.readLine()));
+				continue;
+			}
+
+			boolean flag = false;
+			Student student = new Student(reader.readLine());
+			for (int j = 0; j < students.size(); j++) {
+				if (students.get(j).compareTo(student) < 0) {
+					students.add(j, student);
+					flag = true;
+					break;
+				}
+			}
+
+			if (!flag) {
+				students.add(student);
+			}
+		}
+	}
+}
