@@ -1,0 +1,30 @@
+fun main(args: Array<String>) {
+    val split = readLine()?.split("") ?: arrayListOf("(", "(", ")", ")")
+//     val split = readLine()?.split("") ?: arrayListOf("(", "(", "(", "(", ")", "(", "(", ")", "(", ")",
+//                                                      ")", ")", "(", "(", ")", ")", "(", ")", ")", ")",
+//                                                      "(", "(", ")", "(", ")", ")")
+//     val split = readLine()?.split("") ?: arrayListOf("(", ")", "(", "(", "(", "(", ")", "(", ")", ")",
+//                                                      "(", "(", ")", ")", "(", ")", ")", ")", "(", "(",
+//                                                      ")", ")")
+    var stack = 0
+    var laser = false
+    var result = 0
+    
+    split
+        .iterator()
+        .forEach {
+            when (it) {
+                "(" -> {
+	                stack++
+    	            laser = true
+                }
+                ")" -> {
+                    stack--
+                    result += if (laser) stack else 1
+                    laser = false
+                }
+            }
+        }
+    
+    println("${result}")
+}
