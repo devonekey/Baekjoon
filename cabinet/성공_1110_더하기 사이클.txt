@@ -1,0 +1,12 @@
+fun main(args: Array<String>) {
+    val N: Int = readLine()?.toInt() ?: 0
+    var newN = N
+    var cycleLength = 0
+    
+    do {
+        cycleLength++
+        newN = newN.rem(10).times(10) + (newN.div(10) + newN.rem(10)).rem(10)
+    } while(newN != N)
+    
+    println("${cycleLength}")
+}
