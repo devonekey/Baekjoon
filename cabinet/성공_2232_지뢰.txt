@@ -1,0 +1,35 @@
+import java.util.Scanner
+
+fun main(args: Array<String>) {
+    val scanner = Scanner(System.`in`)
+    val N = scanner.nextInt()
+    var peek = 0
+    var prev = 0
+    val targets = arrayListOf<Int>()
+
+    for (i in 1..N) {
+        val current = scanner.nextInt()
+
+        if (prev < current) {
+            if (i - peek > 1) {
+                targets.add(peek)
+            }
+
+            peek = i
+        } else if (prev == current) {
+            targets.add(peek)
+
+            peek = i
+        }
+
+        prev = current
+    }
+
+    if (targets.isEmpty() || targets.last() != peek) {
+        targets.add(peek)
+    }
+
+    scanner.close()
+
+    targets.forEach { println(it) }
+}
