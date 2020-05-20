@@ -1,12 +1,26 @@
-fun main(args: Array<String>) {
-    val N: Int = readLine()?.toInt() ?: 0
-    var newN = N
-    var cycleLength = 0
-    
-    do {
-        cycleLength++
-        newN = newN.rem(10).times(10) + (newN.div(10) + newN.rem(10)).rem(10)
-    } while(newN != N)
-    
-    println("${cycleLength}")
+import java.util.Scanner
+
+/**
+ * ## 1110번, 더하기 사이클
+ * ### 분류 : 수학
+ * ### 풀이
+ * - 문제에 로직이 드러나 있으므로, 그대로 구현한다.
+ * - 제시된 숫자와 일치할 때까지 반복문을 실행하면서 카운팅한다.
+ */
+class Main {
+    companion object {
+        @JvmStatic fun main(args: Array<String>) = with(Scanner(System.`in`)) {
+            val N = nextInt()
+            var nextN = N
+            var length = 0
+
+            do {
+                nextN = nextN % 10 * 10 + (nextN / 10 + nextN % 10) % 10
+
+                length++
+            } while (nextN != N)
+
+            println(length)
+        }
+    }
 }

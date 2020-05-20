@@ -1,8 +1,24 @@
-fun main(args: Array<String>) {
-    val split = readLine()?.split(" ") ?: arrayListOf("2", "2")
-    val N = split[0].toInt()
-    val M = split[1].toInt()
-    var count = (M - 1) + M.times(N - 1)
-    
-    println("${count}")
+import java.util.Scanner
+
+/**
+ * ## 2163번, 초콜릿 자르기
+ * ### 분류 : 다이나믹 프로그래밍, 수학
+ * ### 풀이
+ * - 문제에 로직이 드러나 있으므로, 그대로 구현한다.
+ * - 굳이 다이나믹 프로그래밍을 적용하지 않더라도 간단한 수학으로도 풀 수 있는 문제이다.
+ */
+class Main {
+    companion object {
+        @JvmStatic fun main(args: Array<String>) = with(Scanner(System.`in`)) {
+            val N: Int
+            val M: Int
+
+            nextLine().split(" ").apply {
+                N = this[0].toInt()
+                M = this[1].toInt()
+            }
+
+            println(M * N - 1)
+        }
+    }
 }

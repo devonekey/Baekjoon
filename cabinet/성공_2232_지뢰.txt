@@ -1,35 +1,46 @@
 import java.util.Scanner
 
-fun main(args: Array<String>) {
-    val scanner = Scanner(System.`in`)
-    val N = scanner.nextInt()
-    var peek = 0
-    var prev = 0
-    val targets = arrayListOf<Int>()
+/**
+ * ## 2232번, 지뢰
+ * ### 분류 : 다이나믹 프로그래밍?
+ * ### 풀이
+ * - 문제에 로직이 드러나 있으므로, 그대로 구현하면 되지만, 생각해볼 사항들이 있다.
+ * - 지뢰 번호를 저장할 리스트를 준비한다.
+ * - 최고 충격 강도를 지닌 지뢰 번호와 이전 지뢰의 충격 강도를 기억할 필요가 있다.
+ * - 이전과 현재 지뢰의 충격 강도를 비교했을 때, 현재 지뢰의 충격 강도가 크거나 같다면 기억해둔 지뢰 번호를 리스트에 저장하고,
+ * (단, 충격 강도가 크면서 인접한 경우라면 저장하지 않는다.) 현재의 지뢰 번호를 기억한다.
+ * - 최고 충격 강도를 지닌 지뢰 번호가 리스트의 마지막과 다르면, 해당 번호를 저장한다.
+ */
+class Main {
+    companion object {
+        @JvmStatic fun main(args: Array<String>) = with(Scanner(System.`in`)) {
+            val N = nextInt()
+            var peak = 0
+            var prevP = 0
 
-    for (i in 1..N) {
-        val current = scanner.nextInt()
+            arrayListOf<Int>().apply {
+                for (i in 1..N) {
+                    val currentP = nextInt()
 
-        if (prev < current) {
-            if (i - peek > 1) {
-                targets.add(peek)
-            }
+                    if (prevP < currentP) {
+                        if (i - peak > 1) {
+                            this.add(peak)
+                        }
 
-            peek = i
-        } else if (prev == current) {
-            targets.add(peek)
+                        peak = i
+                    } else if (prevP == currentP) {
+                        this.add(peak)
 
-            peek = i
+                        peak = i
+                    }
+
+                    prevP = currentP
+                }
+
+                if (this.isEmpty() || this.last() != peak) {
+                    this.add(peak)
+                }
+            }.forEach { println(it) }
         }
-
-        prev = current
     }
-
-    if (targets.isEmpty() || targets.last() != peek) {
-        targets.add(peek)
-    }
-
-    scanner.close()
-
-    targets.forEach { println(it) }
 }

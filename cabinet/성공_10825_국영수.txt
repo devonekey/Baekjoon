@@ -1,0 +1,27 @@
+import java.util.Scanner
+
+/**
+ * ## 10825번, 국영수
+ * ### 분류 : 정렬
+ * ### 풀이
+ * - 여러 개의 변수를 특정 기준에 정렬하는 문제로도, 사용하는 언어의 정렬 활용에 따라 난이도가 결정된다.
+ * - "-"를 붙이면 내림차순으로 정렬된다.
+ */
+class Main {
+    companion object {
+        @JvmStatic fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            val N = nextLine().toInt()
+            val students = Array(N) { Student(nextLine()) }
+
+            students.sortedWith(compareBy({ -it.korean }, Student::english, { -it.mathematics }, Student::name))
+                    .forEach { println(it.name) }
+        }
+
+        class Student(line: String) {
+            var name: String = line.split(" ")[0]
+            var korean: Int = line.split(" ")[1].toInt()
+            var english: Int = line.split(" ")[2].toInt()
+            var mathematics: Int = line.split(" ")[3].toInt()
+        }
+    }
+}

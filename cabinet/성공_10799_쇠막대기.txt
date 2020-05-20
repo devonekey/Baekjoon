@@ -1,30 +1,38 @@
-fun main(args: Array<String>) {
-    val split = readLine()?.split("") ?: arrayListOf("(", "(", ")", ")")
-//     val split = readLine()?.split("") ?: arrayListOf("(", "(", "(", "(", ")", "(", "(", ")", "(", ")",
-//                                                      ")", ")", "(", "(", ")", ")", "(", ")", ")", ")",
-//                                                      "(", "(", ")", "(", ")", ")")
-//     val split = readLine()?.split("") ?: arrayListOf("(", ")", "(", "(", "(", "(", ")", "(", ")", ")",
-//                                                      "(", "(", ")", ")", "(", ")", ")", ")", "(", "(",
-//                                                      ")", ")")
-    var stack = 0
-    var laser = false
-    var result = 0
-    
-    split
-        .iterator()
-        .forEach {
-            when (it) {
-                "(" -> {
-	                stack++
-    	            laser = true
-                }
-                ")" -> {
-                    stack--
-                    result += if (laser) stack else 1
-                    laser = false
+import java.util.Scanner
+
+/**
+ * ## 10799번, 쇠막대기
+ * ### 분류 : 스택
+ * ### 풀이
+ * - 문제에 로직이 드러나 있으므로, 그대로 구현한다.
+ * - "("를 입력받으면, 스택을 증가시키고 다음 문자가 레이저일 수 있음을 기억한다.
+ * - ")"를 입력받으면, 스택을 감소시킨고 다음 문자가 레이저가 아님을 기억한다.
+ * 레이저라면 쌓아둔 스택을 결과 변수에 추가하고, 레이저가 아니라면 1을 결과 변수에 추가한다.
+ */
+class Main {
+    companion object {
+        @JvmStatic fun main(args: Array<String>) = with(Scanner(System.`in`)) {
+            var stack = 0
+            var laser = false
+            var result = 0
+
+            next().split("").forEach {
+                when (it) {
+                    "(" -> {
+                        stack++
+
+                        laser = true
+                    }
+                    ")" -> {
+                        stack--
+
+                        result += if (laser) stack else 1
+                        laser = false
+                    }
                 }
             }
+
+            println(result)
         }
-    
-    println("${result}")
+    }
 }
