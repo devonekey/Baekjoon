@@ -1,3 +1,55 @@
+import java.util.Scanner
+
+/**
+ * ## 1309번, 동물원
+ * ### 분류 : 다이나믹 프로그래밍
+ * ### 풀이
+ * - 2 * N의 우리에서 사자를 배치하는 경우의 수를 묻는 문제로
+ * "n - 1번 줄의 왼쪽 칸에 배치하면 n번 줄의 왼쪽 칸에 배치할 수 없고 오른쪽 칸에 배치하면 n번 줄의 오른쪽 칸에 배치할 수 없다"와
+ * "배치하지 않는 경우도 있다"라는 조건을 만족해야 한다.
+ * - 각 줄의 왼쪽에 배치, 배치하지 않음, 오른쪽에 배치하는 경우의 수(current(x))를 N줄이 될 때까지 점진적으로 구하면 된다.
+ * ```
+ * 직전에 배치했던 칸이 왼쪽(x = 0)일 때 current(0) = prev(1) + prev(2)
+ * 직전에 배치하지 않았을 때(x = 1) current(1) = prev(0) + prev(1) + prev(2)
+ * 직전에 배치했던 칸이 오른쪽(x = 2)일 때 current(2) = prev(0) + prev(1)
+ * ```
+ */
+class Main {
+    companion object {
+        @JvmStatic fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            val N = nextInt()
+            val prev = LongArray(3).apply {
+                this[0] = 1L
+                this[1] = 1L
+                this[2] = 1L
+            }
+            val current = prev.copyOf()
+
+            for (i in 1 until N) {
+                current[0] = prev[1] + prev[2]
+                current[1] = prev[0] + prev[1] + prev[2]
+                current[2] = prev[0] + prev[1]
+
+                prev[0] = current[0] % 9901
+                prev[1] = current[1] % 9901
+                prev[2] = current[2] % 9901
+            }
+
+            println("${(current[0] + current[1] + current[2]) % 9901}")
+        }
+    }
+}
+
+/*
+ * ### 풀이
+ * - 각 줄(n)의 배치하는 경우의 수(cases(n))들은 서로 간에 규칙이 있어서 다음과 같이 표현될 수 있다.
+ * ```
+ * 1번째 줄일 때 cases(1) = 3
+ * 2번째 줄일 때 cases(2) = 7
+ * n번째 줄일 때 cases(n) = 2 * cases(n - 1) + cases(i - 2)
+ * ```
+ */
+/*
 import java.util.Scanner;
 
 public class Main {
@@ -19,3 +71,57 @@ public class Main {
         System.out.println(cases[N - 1]);
     }
 }
+*/
+
+/*
+ * ### 분석
+ * - 각 줄에 배치할 수 있는 경우의 수를 저장하는 것이 아닌 모든 경우를 넣는 방법이다.
+ * - 공간복잡도가 O(N)으로 많은 메모리를 요구하게 된다.
+ */
+/*
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+	public static void main(String... args) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));) {
+			int N = Integer.parseInt(reader.readLine());
+			List<Integer> prevData = null;
+			List<Integer> currentData = null;
+
+			for (int row = 0; row < N; row++) {
+				currentData = new ArrayList<>();
+
+				if (row == 0) {
+					currentData.add(-1);
+					currentData.add(0);
+					currentData.add(1);
+				} else {
+					for (int parent : prevData) {
+						if (parent != -1) {
+							currentData.add(-1);
+						}
+
+						currentData.add(0);
+
+						if (parent != 1) {
+							currentData.add(1);
+						}
+					}
+				}
+
+				prevData = currentData;
+			}
+
+			writer.write("" + currentData.size() % 9901);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+*/

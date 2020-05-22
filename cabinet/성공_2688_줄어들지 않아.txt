@@ -1,0 +1,52 @@
+import java.util.Scanner
+import kotlin.math.max
+
+/**
+ * ## 2688번, 줄어들지 않아
+ * ### 분류 : 다이나믹 프로그래밍
+ * ### 풀이
+ * - "왼쪽의 자릿수가 오른쪽의 자릿수보다 작거나 같다"라는 조건을 만족하는 n자릿수의 개수를 구하는 문제다.
+ * - 1자리부터 n자리까지 각 자릿수가 조건을 만족하며, 제일 오른쪽 자릿수가 0에서 9로 끝나는 모든 숫자를 점진적으로 구하면 된다.
+ * - 각 자릿수의 0에서 9의 출현 회수(f(x))는 다음과 같이 표현함으로써 계산할 수 있다.
+ * ```
+ * 마지막 자릿수가 0일 때 f(0) = 1
+ * 마지막 자릿수가 x일 때 f(x) = f(x) + f(x - 1) 단, x는 1이상 9이하
+ * ```
+ * - n자리에서 0에서 9의 출현 회수를 모두 더한다.
+ */
+class Main {
+    companion object {
+        @JvmStatic fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            val T = nextInt()
+            val cases = IntArray(T)
+            var longestCase = 0
+
+            for (i in 0 until T) {
+                cases[i] = nextInt()
+                longestCase = max(longestCase, cases[i])
+            }
+
+            val dp = mutableMapOf<Int, Long>().apply {
+                for (i in 0..9) {
+                    this[i] = 1L
+                }
+            }
+            val results = LongArray(longestCase).apply {
+                this[0] = 10L
+            }
+
+            for (i in 1 until longestCase) {
+                var count = 1L
+
+                for (j in 1..9) {
+                    dp[j] = dp[j]!! + dp[j - 1]!!
+                    count += dp[j]!!
+                }
+
+                results[i] = count
+            }
+
+            cases.forEach { println(results[it - 1]) }
+        }
+    }
+}
