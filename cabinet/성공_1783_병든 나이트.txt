@@ -1,3 +1,32 @@
+import java.util.Scanner
+
+/**
+ * ## 1783번, 병든 나이트
+ * ### 분류 : 그리디 알고리즘
+ * ### 풀이
+ * - 3칸 이상일 경우에 1칸씩 이동해야 가장 많은 칸을 방문할 수 있다.
+ * - 제약 사항을 잘 이해하는 것이 중요하고 시키는 대로 분기를 잘 나누면 된다.
+ */
+class Main {
+    companion object {
+        @JvmStatic fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            val N = nextInt()
+            val M = nextInt()
+
+            println(when {
+                M == 0 || N == 0 -> 0
+                M == 1 || N == 1 -> 1
+                N == 2 -> if (M >= 7) 4 else (M + 1) / 2
+                M == 2 -> 2
+                M == 3 -> 3
+                M in 4..6 -> 4
+                else -> M - 2
+            })
+        }
+    }
+}
+
+/*
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -52,3 +81,4 @@ public class Main {
         writer.flush();
     }
 }
+*/
