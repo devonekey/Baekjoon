@@ -1,0 +1,103 @@
+import java.util.*
+
+/**
+ * ## 1260번, DFS와 BFS
+ * ### 분류 : DFS, BFS
+ * ### 풀이
+ * - 문제에서 주어진 간선들은 모두 양방향으로 인접 행렬을 사용하였다.
+ * - 간선에 나타난 정점들은 행렬의 인덱스가 됐으며, "방문하지 않았음"으로 초기화하였다.
+ * - 루트 노드에서 정점들을 꺼내면서 방문하지 않은 정점을 발견하면, 해당 정점 연결된 정점들을 저장하였다.
+ * - DFS일 때 방문할 정점들은 스택에 저장하였고, BFS일 때 방문할 정점들은 덱에 저장하였다.
+ * - 저장된 정점을 꺼낼 때 방문하지 않은 정점이라면 출력하였다.
+ */
+class Main {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            val N = nextInt()
+            val M = nextInt()
+            val root = nextInt()
+            val map = Array(N + 1) { BooleanArray(N + 1) }.apply {
+                for (i in 0..N) {
+                    for (j in 0..N) {
+                        this[i][j] = i != j
+                    }
+                }
+
+                for (i in 0 until M) {
+                    val V1 = nextInt()
+                    val V2 = nextInt()
+
+                    this[V1][V2] = false
+                    this[V2][V1] = false
+                }
+            }
+            var visit: Array<BooleanArray>
+            var result: String
+
+            // Depth-First Search
+            visit = Array(N + 1) { BooleanArray(N + 1) }.apply {
+                for (i in 0..N) {
+                    for (j in 0..N) {
+                        this[i][j] = map[i][j]
+                    }
+                }
+            }
+            result = ""
+            val stack = Stack<Int>().apply {
+                this.add(root)
+            }
+
+            while (stack.size > 0) {
+                val current = stack.pop()
+
+                if (!visit[current][current]) {
+                    result += "$current "
+
+                    for (i in N downTo 1) {
+                        if (!visit[current][i] || !visit[i][current]) {
+                            visit[current][i] = true
+                            visit[i][current] = true
+
+                            stack.push(i)
+                        }
+                    }
+                }
+            }
+
+            println(result)
+
+            // Breadth-First Search
+            visit = Array(N + 1) { BooleanArray(N + 1) }.apply {
+                for (i in 0..N) {
+                    for (j in 0..N) {
+                        this[i][j] = map[i][j]
+                    }
+                }
+            }
+            result = ""
+            val deque: Deque<Int> = LinkedList<Int>().apply {
+                this.add(root)
+            }
+
+            while (deque.size > 0) {
+                val current = deque.poll()
+
+                if (!visit[current][current]) {
+                    result += "$current "
+
+                    for (i in 1..N) {
+                        if (!visit[current][i] || !visit[i][current]) {
+                            visit[current][i] = true
+                            visit[i][current] = true
+
+                            deque.add(i)
+                        }
+                    }
+                }
+            }
+
+            println(result)
+        }
+    }
+}
