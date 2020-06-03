@@ -1,0 +1,86 @@
+import java.util.*
+
+/**
+ * ## 2667번, 단지번호붙이기
+ * ### 분류 : DFS, BFS
+ * ### 풀이
+ * - 문제에서 주어진 정보들은 인접 행렬로 표현하였다.
+ * - 이동할 수 없는 칸은 "방문하였음"으로 초기화한다.
+ * - 모든 좌표를 순회하면서 방문하지 않은 좌표를 발견하면, 집의 수를 기억하고 좌표를 스택에 저장한다.
+ * - 좌표들을 스택에서 꺼내어 "방문하였음"으로 변경하고, 집의 수를 증가시킨다.
+ * - 4방향의 인접한 좌표들을 조사하여 방문하지 않았을 경우, 좌표를 스택에 저장한다.
+ * - 단지수를 출력하고 기억했던 집의 수를 정렬하여 출력한다.
+ * - DFS로 풀었으나 BFS로 풀어도 무방하다.
+ */
+class Main {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            val N = nextLine().toInt()
+            val map = Array(N) { IntArray(N) }.apply {
+                for (i in 0 until N) {
+                    val chars = nextLine().toCharArray()
+
+                    for (j in 0 until N) {
+                        this[i][j] = chars[j] - '0'
+                    }
+                }
+            }
+            val visit = Array(N) { BooleanArray(N) }.apply {
+                for (i in 0 until N) {
+                    for (j in 0 until N) {
+                        this[i][j] = map[i][j] == 0
+                    }
+                }
+            }
+            val stack = Stack<Location>()
+            val result = mutableListOf<Int>()
+
+            for (i in 0 until N) {
+                for (j in 0 until N) {
+                    if (visit[i][j]) {
+                        continue
+                    }
+
+                    stack.push(Location(i, j))
+                    result.add(0)
+
+                    while (stack.size > 0) {
+                        val current = stack.pop()
+
+                        if (!visit[current.x][current.y]) {
+                            visit[current.x][current.y] = true
+                            result[result.lastIndex] += 1
+
+                            if (current.y > 0 &&
+                                    !visit[current.x][current.y - 1]) {
+                                stack.push(Location(current.x, current.y - 1))
+                            }
+
+                            if (current.x > 0 &&
+                                    !visit[current.x - 1][current.y]) {
+                                stack.push(Location(current.x - 1, current.y))
+                            }
+
+                            if (current.y < N - 1 &&
+                                    !visit[current.x][current.y + 1]) {
+                                stack.push(Location(current.x, current.y + 1))
+                            }
+
+                            if (current.x < N - 1 &&
+                                    !visit[current.x + 1][current.y]) {
+                                stack.push(Location(current.x + 1, current.y))
+                            }
+                        }
+                    }
+                }
+            }
+
+            println(result.size)
+
+            result.sorted().forEach { println(it) }
+        }
+
+        class Location(val x: Int, val y: Int)
+    }
+}
