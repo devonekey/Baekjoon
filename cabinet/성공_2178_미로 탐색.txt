@@ -1,0 +1,87 @@
+import java.util.*
+
+/**
+ * ## 2178번, 미로 탐색
+ * ### 분류 : BFS
+ * ### 풀이
+ * - 문제에서 주어진 정보들은 인접 행렬로 표현하였다.
+ * - 이동할 수 없는 칸은 "방문하였음"으로 초기화하였다.
+ * - 좌표들을 덱에서 꺼내면서 방문하지 않은 좌표를 발견하면, 이동 칸 수를 증가시키고 "방문하였음"으로 처리하였다.
+ * - 4방향의 인접한 좌표들을 조사하여 방문하지 않았을 경우, 현재의 이동 칸 수를 기억해두고 좌표를 덱에 저장하였다.
+ * - 도착 지점에 기억되는 최초의 이동 칸 수가 이 문제의 정답이 된다.
+ */
+class Main {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            val N: Int
+            val M: Int = nextLine().split(" ").let {
+                N = it[0].toInt()
+
+                it[1].toInt()
+            }
+            val map = Array(N) { IntArray(M) }.apply {
+                for (i in 0 until N) {
+                    val chars = nextLine().toCharArray()
+
+                    for (j in 0 until M) {
+                        this[i][j] = chars[j] - '0'
+                    }
+                }
+            }
+            val visit = Array(N) { BooleanArray(M) }.apply {
+                for (i in 0 until N) {
+                    for (j in 0 until M) {
+                        this[i][j] = map[i][j] == 0
+                    }
+                }
+            }
+            val deque: Deque<Location> = LinkedList<Location>().apply {
+                map[0][0] = 0
+
+                this.add(Location(0, 0))
+            }
+
+            while (deque.size > 0) {
+                val current = deque.poll()
+
+                if (!visit[current.x][current.y]) {
+                    val move = ++map[current.x][current.y]
+                    visit[current.x][current.y] = true
+
+                    if (current.y > 0 &&
+                            !visit[current.x][current.y - 1]) {
+                        map[current.x][current.y - 1] = move
+
+                        deque.add(Location(current.x, current.y - 1))
+                    }
+
+                    if (current.x > 0 &&
+                            !visit[current.x - 1][current.y]) {
+                        map[current.x - 1][current.y] = move
+
+                        deque.add(Location(current.x - 1, current.y))
+                    }
+
+                    if (current.x < N - 1 &&
+                            !visit[current.x + 1][current.y]) {
+                        map[current.x + 1][current.y] = move
+
+                        deque.add(Location(current.x + 1, current.y))
+                    }
+
+                    if (current.y < M - 1 &&
+                            !visit[current.x][current.y + 1]) {
+                        map[current.x][current.y + 1] = move
+
+                        deque.add(Location(current.x, current.y + 1))
+                    }
+                }
+            }
+
+            println(map[N - 1][M - 1])
+        }
+
+        class Location(val x: Int, val y: Int)
+    }
+}
