@@ -1,0 +1,63 @@
+import java.util.*
+import kotlin.math.pow
+
+/**
+ * ## 1065번, 한수
+ * #### 분류 : 브루트 포스, 탐색
+ * #### 풀이
+ * - 한수란 각 자리의 숫자가 등차수열을 이루는 수다.
+ * - 몇 개의 데이터를 확인하면서 규칙을 찾는 것과 이를 코드에 녹여내는 것이 중요하다.
+ * - BFS를 사용하였고 한수들은 덱에 저장하였으며, 저장된 한수가 없을 때까지 반복하였다.
+ * - 한수들을 꺼내면서 N이하의 수인지 검사하였다.(이 때 카운팅)
+ * - 한수의 마지막 자리 뒤에 임의의 숫자를 붙였을 때 한수가 성립하는지 확인하였고,
+ * 한수라면 해당 수를 덱에 저장하였다.
+ * - 카운팅했던 한수의 수를 출력하였다.
+ */
+class Main {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            val N = nextInt()
+            val deque = LinkedList<Int>().apply {
+                if (N in 1..99) {
+                    println(N)
+
+                    return@main
+                }
+
+                for (i in 10..99) {
+                    this.add(i)
+                }
+            }
+            var count = 9
+
+            while (deque.size > 0) {
+                val headDigit: Int
+                val nextDigit: Int
+                val tailDigit: Int
+                val diff: Int
+                val current = deque.pop().apply {
+                    val length = this.toString().length
+                    headDigit = (this / 10.0.pow(length - 1)).toInt()
+                    nextDigit = (this % 10.0.pow(length - 1) / if (length == 2) {
+                        1
+                    } else {
+                        10.0.pow(length - 2).toInt()
+                    }).toInt()
+                    tailDigit = this % 10
+                    diff = nextDigit - headDigit
+                }
+
+                if (current <= N) {
+                    count++
+
+                    if (tailDigit + diff in 0..9 && current * 10 + tailDigit + diff <= N) {
+                        deque.add(current * 10 + tailDigit + diff)
+                    }
+                }
+            }
+
+            println(count)
+        }
+    }
+}
