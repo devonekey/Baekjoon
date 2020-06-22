@@ -1,0 +1,57 @@
+import java.util.Scanner
+
+/**
+ * ## 2210번, 숫자판 점프
+ * ### 분류 : 백트래킹
+ * ### 풀이
+ * - 어느 한 지점에서 길이가 6이 될 때까지 이동하면서 만들어지는 수들의 개수를 구하는 문제이다.
+ * - 모든 좌표를 순회하면서 길이가 6이 될 때까지 4방향으로 탐색하면 쉽게 풀 수 있다.
+ */
+class Main {s
+    companion object {
+        val N = 5
+        val map = Array(N) { IntArray(N) }
+        val result = HashSet<String>()
+
+        @JvmStatic
+        fun main(args: Array<String>): Unit = with(Scanner(System.`in`)) {
+            for (i in 0 until N) {
+                for (j in 0 until N) {
+                    map[i][j] = nextInt()
+                }
+            }
+
+            for (i in 0 until N) {
+                for (j in 0 until N) {
+                    next(i, j, "")
+                }
+            }
+
+            println(result.size)
+        }
+
+        fun next(i: Int, j: Int, current: String) {
+            if (current.length == 6) {
+                result.add(current)
+
+                return
+            }
+
+            if (i > 0) {
+                next(i - 1, j, current + map[i - 1][j])
+            }
+
+            if (j > 0) {
+                next(i, j - 1, current + map[i][j - 1])
+            }
+
+            if (i < N - 1) {
+                next(i + 1, j, current + map[i + 1][j])
+            }
+
+            if (j < N - 1) {
+                next(i, j + 1, current + map[i][j + 1])
+            }
+        }
+    }
+}
