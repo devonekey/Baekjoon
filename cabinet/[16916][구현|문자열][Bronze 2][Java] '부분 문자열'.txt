@@ -1,0 +1,71 @@
+import java.util.*;
+
+/**
+ * <h1>부분 문자열</h1>
+ * <h5>문제: 16916</h5>
+ * <h5>분류: 구현, 문자열</h5>
+ * <h5>난이도: Bronze 2</h5>
+ * <h5>풀이</h5>
+ * <ul>
+ * <li>문자열 S와 다른 문자열 P가 주어질 때, P가 S의 부분 문자열인지를 찾는 문제이다.</li>
+ * <li>단순히 {@link java.lang.String#contains}를 이용하여 비교하는 방법은
+ * O(N * M)의 성능으로 시간 초과가 발생한다.</li>
+ * <li>그래서 'KMP 알고리즘'을 이용하여 O(N + M)의 성능으로 해결했다.</li>
+ * <ol>
+ *     <li>P를 순회하면서 접두사와 접미사가 일치하는 최대 길이를 저장한다.</li>
+ *     <li>S를 순회하면서 P와 일치하는지 점검하다 같지 않은 부분이 발생하면,
+ *     최대 길이를 저장한 배열을 참고하여 이전에 일치했던 위치로 이동하여 다시 점검하기 시작한다.</li>
+ * </ol>
+ * </ul>
+ */
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String S = scanner.nextLine();
+        String P = scanner.nextLine();
+        int targetLength = S.length(), patternLength = P.length(), i = 0, j = 0;
+        int[] lps = getLongestPrefixSuffix(P);
+
+        while (i < targetLength) {
+            if (S.charAt(i) == P.charAt(j)) {
+                i++;
+                j++;
+            }
+
+            if (j == patternLength) {
+                System.out.println(1);
+
+                return;
+            } else if (i < targetLength && S.charAt(i) != P.charAt(j)) {
+                if (j != 0) {
+                    j = lps[j - 1];
+                } else {
+                    i++;
+                }
+            }
+        }
+
+        System.out.println(0);
+    }
+
+    private static int[] getLongestPrefixSuffix(String pattern) {
+        int length = pattern.length();
+        int[] lps = new int[length];
+        int matched = 0;
+        int i = 1;
+
+        while (i < length) {
+            if (pattern.charAt(i) == pattern.charAt(matched)) {
+                lps[i] = ++matched;
+                i++;
+            } else if (matched != 0) {
+                matched = lps[matched - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+
+        return lps;
+    }
+}
