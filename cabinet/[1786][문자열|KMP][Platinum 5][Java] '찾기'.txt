@@ -1,0 +1,75 @@
+import java.util.*;
+
+/**
+ * <h1>찾기</h1>
+ * <h5>문제: 1786</h5>
+ * <h5>분류: 문자열, KMP</h5>
+ * <h5>난이도: Platinum 5</h5>
+ * <h5>풀이</h5>
+ * <ul>
+ * <li>문자열 T와 다른 문자열 P가 주어질 때, P가 T의 부분 문자열로써 몇번 등장하는지
+ * 또, T의 어느 위치에 있는지를 출력하는 문제이다.</li>
+ * <li>그래서 'KMP 알고리즘'을 이용하여 해결했다.</li>
+ * <ol>
+ *     <li>P를 순회하면서 접두사와 접미사가 일치하는 최대 길이를 저장한다.</li>
+ *     <li>T를 순회하면서 P와 일치하는지 점검하다 같지 않은 부분이 발생하면,
+ *     최대 길이를 저장한 배열을 참고하여 이전에 일치했던 위치로 이동하여 다시 점검하기 시작한다.</li>
+ *     <li>P가 T의 부분 문자열로 확인된다면, T에서 P가 시작되는 위치를 저장하고
+ *     이전에 일치했던 위치로 이동하여 위의 과정을 반복한다.</li>
+ *     <li>최종적으로 T를 모두 순회하면, 저장한 내용을 바탕으로 결과를 출력한다.</li>
+ * </ol>
+ * </ul>
+ */
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String T = scanner.nextLine();
+        String P = scanner.nextLine();
+        int[] lps = getLongestPrefixSuffix(P);
+        int i = 0, j = 0;
+        List<Integer> indexList = new ArrayList<>();
+
+        while (i < T.length()) {
+            if (T.charAt(i) == P.charAt(j)) {
+                i++;
+                j++;
+            }
+
+            if (j == P.length()) {
+                indexList.add(i - j + 1);
+
+                j = lps[j - 1];
+            } else if (i < T.length() && T.charAt(i) != P.charAt(j)) {
+                if (j != 0) {
+                    j = lps[j - 1];
+                } else {
+                    i++;
+                }
+            }
+        }
+
+        System.out.println(indexList.size());
+
+        for (int index : indexList) {
+            System.out.print(index + " ");
+        }
+    }
+
+    private static int[] getLongestPrefixSuffix(String pattern) {
+        int length = pattern.length(), i = 1, matched = 0;
+        int[] lps = new int[pattern.length()];
+
+        while (i < length) {
+            if (pattern.charAt(i) == pattern.charAt(matched)) {
+                lps[i] = ++matched;
+                i++;
+            } else if (matched != 0) {
+                matched = lps[matched - 1];
+            } else {
+                i++;
+            }
+        }
+
+        return lps;
+    }
+}
